@@ -5,9 +5,16 @@ namespace App\Http\Modules\Productos\Controllers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Http\Modules\Productos\Model\Producto;
+use App\Http\Modules\Productos\Services\ProductoService;
 
 class ProductosController extends Model
 {
+    protected $productoService;
+
+    public function __construct()
+    {
+        $this->productoService = new ProductoService();
+    }
     public function crearProducto(Request $request)
     {
         try {
@@ -27,7 +34,7 @@ class ProductosController extends Model
 
     public function mostrarProducto($id)
     {
-        $producto = Producto::find($id);
+        $producto = $this->productoService->existeProducto($id);
         if ($producto) {
             return response()->json(['data' => $producto]);
         } else {
@@ -37,9 +44,7 @@ class ProductosController extends Model
 
     public function actualizarProducto(Request $request, $id)
     {
-        $producto = Producto::find($id);
-        
-
+        $producto = $this->productoService->existeProducto($id);
         if ($producto) {
             $producto->update($request->all());
             return response()->json(['data' => $producto, 'status' => '200']);
@@ -50,7 +55,7 @@ class ProductosController extends Model
 
     public function eliminarProducto($id)
     {
-        $producto = Producto::find($id);
+        $producto = $this->productoService->existeProducto($id);
         if ($producto) {
             $producto->delete();
             return response()->json(['message' => 'Producto eliminado', 'status' => '200']);
