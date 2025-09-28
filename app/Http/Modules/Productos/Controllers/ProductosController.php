@@ -38,6 +38,8 @@ class ProductosController extends Model
     public function actualizarProducto(Request $request, $id)
     {
         $producto = Producto::find($id);
+        
+
         if ($producto) {
             $producto->update($request->all());
             return response()->json(['data' => $producto, 'status' => '200']);
